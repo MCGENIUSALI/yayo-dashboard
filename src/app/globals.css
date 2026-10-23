@@ -1,0 +1,239 @@
+@import "tailwindcss";
+
+/*
+ * YA YO! design tokens, mirrored from the Figma "Design system" page.
+ * Primitives live in :root, semantic tokens switch between light and dark.
+ * Screens must only use semantic tokens (bg-surface, text-fg, border-line...).
+ */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  /* Primitives: neutral */
+  --neutral-0: #ffffff;
+  --neutral-25: #fafafa;
+  --neutral-50: #f5f5f6;
+  --neutral-100: #eeeef0;
+  --neutral-200: #e2e2e5;
+  --neutral-300: #c9c9ce;
+  --neutral-400: #a1a1a8;
+  --neutral-500: #76767e;
+  --neutral-600: #56565d;
+  --neutral-700: #3a3a40;
+  --neutral-800: #232327;
+  --neutral-900: #141417;
+  --neutral-950: #0a0a0b;
+  /* Primitives: orange */
+  --orange-50: #fff4e6;
+  --orange-100: #ffe2c3;
+  --orange-200: #ffc58a;
+  --orange-300: #ffa54d;
+  --orange-400: #ff8f1f;
+  --orange-500: #fb7800;
+  --orange-600: #db6200;
+  --orange-700: #b04d00;
+  --orange-800: #8a3c00;
+  --orange-900: #592600;
+  /* Primitives: green, red, amber, blue */
+  --green-50: #e6f7f3;
+  --green-100: #c2ede2;
+  --green-300: #5cccb0;
+  --green-500: #00957a;
+  --green-600: #007a64;
+  --green-700: #005e4d;
+  --green-900: #00332a;
+  --red-50: #feecec;
+  --red-100: #fcd3d2;
+  --red-300: #f28c87;
+  --red-500: #e5372f;
+  --red-600: #c42a23;
+  --red-700: #9b1f1a;
+  --red-900: #4d0f0d;
+  --amber-50: #fff8e1;
+  --amber-100: #ffecb3;
+  --amber-300: #ffd15c;
+  --amber-500: #f5a400;
+  --amber-700: #a36d00;
+  --amber-900: #4d3300;
+  --blue-50: #eaf3ff;
+  --blue-100: #cce2ff;
+  --blue-300: #7db4f5;
+  --blue-500: #1f7ae0;
+  --blue-700: #12519a;
+  --blue-900: #0a2a52;
+
+  /* Semantic: light */
+  --bg-canvas: var(--neutral-25);
+  --bg-surface: var(--neutral-0);
+  --bg-surface-muted: var(--neutral-50);
+  --bg-surface-sunken: var(--neutral-100);
+  --bg-inverse: var(--neutral-950);
+  --bg-brand: var(--neutral-950);
+  --bg-disabled: var(--neutral-200);
+  --bg-accent: var(--orange-500);
+  --bg-accent-pressed: var(--orange-600);
+  --bg-accent-subtle: var(--orange-50);
+  --bg-success: var(--green-500);
+  --bg-success-subtle: var(--green-50);
+  --bg-danger: var(--red-500);
+  --bg-danger-subtle: var(--red-50);
+  --bg-warning: var(--amber-500);
+  --bg-warning-subtle: var(--amber-50);
+  --bg-info: var(--blue-500);
+  --bg-info-subtle: var(--blue-50);
+  --bg-overlay: rgb(10 10 11 / 0.55);
+
+  --text-primary: var(--neutral-950);
+  --text-secondary: var(--neutral-600);
+  --text-tertiary: var(--neutral-500);
+  --text-disabled: var(--neutral-400);
+  --text-inverse: var(--neutral-0);
+  --text-on-accent: var(--neutral-0);
+  --text-accent: var(--orange-600);
+  --text-success: var(--green-600);
+  --text-danger: var(--red-600);
+  --text-warning: var(--amber-700);
+  --text-info: var(--blue-700);
+
+  --border-subtle: var(--neutral-100);
+  --border-default: var(--neutral-200);
+  --border-strong: var(--neutral-300);
+  --border-focus: var(--neutral-950);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg-canvas: var(--neutral-950);
+  --bg-surface: var(--neutral-900);
+  --bg-surface-muted: var(--neutral-800);
+  --bg-surface-sunken: #1b1b1f;
+  --bg-inverse: var(--neutral-0);
+  --bg-brand: var(--neutral-0);
+  --bg-disabled: var(--neutral-700);
+  --bg-accent: var(--orange-500);
+  --bg-accent-pressed: var(--orange-400);
+  --bg-accent-subtle: rgb(251 120 0 / 0.14);
+  --bg-success: var(--green-500);
+  --bg-success-subtle: rgb(0 149 122 / 0.16);
+  --bg-danger: var(--red-500);
+  --bg-danger-subtle: rgb(229 55 47 / 0.16);
+  --bg-warning: var(--amber-500);
+  --bg-warning-subtle: rgb(245 164 0 / 0.14);
+  --bg-info: var(--blue-500);
+  --bg-info-subtle: rgb(31 122 224 / 0.16);
+  --bg-overlay: rgb(0 0 0 / 0.7);
+
+  --text-primary: var(--neutral-25);
+  --text-secondary: var(--neutral-300);
+  --text-tertiary: var(--neutral-400);
+  --text-disabled: var(--neutral-500);
+  --text-inverse: var(--neutral-950);
+  --text-on-accent: var(--neutral-0);
+  --text-accent: var(--orange-300);
+  --text-success: var(--green-300);
+  --text-danger: var(--red-300);
+  --text-warning: var(--amber-300);
+  --text-info: var(--blue-300);
+
+  --border-subtle: var(--neutral-800);
+  --border-default: var(--neutral-700);
+  --border-strong: var(--neutral-600);
+  --border-focus: var(--neutral-0);
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-canvas: var(--bg-canvas);
+  --color-surface: var(--bg-surface);
+  --color-surface-muted: var(--bg-surface-muted);
+  --color-surface-sunken: var(--bg-surface-sunken);
+  --color-inverse: var(--bg-inverse);
+  --color-brand: var(--bg-brand);
+  --color-disabled: var(--bg-disabled);
+  --color-accent: var(--bg-accent);
+  --color-accent-pressed: var(--bg-accent-pressed);
+  --color-accent-subtle: var(--bg-accent-subtle);
+  --color-success: var(--bg-success);
+  --color-success-subtle: var(--bg-success-subtle);
+  --color-danger: var(--bg-danger);
+  --color-danger-subtle: var(--bg-danger-subtle);
+  --color-warning: var(--bg-warning);
+  --color-warning-subtle: var(--bg-warning-subtle);
+  --color-info: var(--bg-info);
+  --color-info-subtle: var(--bg-info-subtle);
+  --color-overlay: var(--bg-overlay);
+
+  --color-fg: var(--text-primary);
+  --color-fg-secondary: var(--text-secondary);
+  --color-fg-tertiary: var(--text-tertiary);
+  --color-fg-disabled: var(--text-disabled);
+  --color-fg-inverse: var(--text-inverse);
+  --color-fg-on-accent: var(--text-on-accent);
+  --color-fg-accent: var(--text-accent);
+  --color-fg-success: var(--text-success);
+  --color-fg-danger: var(--text-danger);
+  --color-fg-warning: var(--text-warning);
+  --color-fg-info: var(--text-info);
+
+  --color-line-subtle: var(--border-subtle);
+  --color-line: var(--border-default);
+  --color-line-strong: var(--border-strong);
+  --color-line-focus: var(--border-focus);
+}
+
+@theme {
+  /* Radii: xs 4 · sm 8 · md 12 · lg 16 · xl 20 · 2xl 28 */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+
+  /* Elevation */
+  --shadow-e1: 0 1px 2px rgb(10 10 11 / 0.06), 0 1px 1px rgb(10 10 11 / 0.04);
+  --shadow-e2: 0 4px 12px rgb(10 10 11 / 0.08);
+  --shadow-e3: 0 12px 32px rgb(10 10 11 / 0.14);
+  --shadow-focus: 0 0 0 3px var(--orange-100);
+}
+
+/* Typography: 17 styles, one family (Inter). */
+@utility type-display { font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -0.02em; }
+@utility type-h1 { font-size: 28px; line-height: 36px; font-weight: 700; letter-spacing: -0.02em; }
+@utility type-h2 { font-size: 24px; line-height: 32px; font-weight: 700; letter-spacing: -0.01em; }
+@utility type-h3 { font-size: 20px; line-height: 28px; font-weight: 600; }
+@utility type-h4 { font-size: 18px; line-height: 24px; font-weight: 600; }
+@utility type-body-l { font-size: 16px; line-height: 24px; font-weight: 400; }
+@utility type-body-m { font-size: 14px; line-height: 20px; font-weight: 400; }
+@utility type-body-s { font-size: 12px; line-height: 16px; font-weight: 400; }
+@utility type-label-l { font-size: 16px; line-height: 24px; font-weight: 600; }
+@utility type-label-m { font-size: 14px; line-height: 20px; font-weight: 600; }
+@utility type-label-s { font-size: 12px; line-height: 16px; font-weight: 500; }
+@utility type-caption { font-size: 11px; line-height: 14px; font-weight: 500; }
+@utility type-overline { font-size: 11px; line-height: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+@utility type-price-l { font-size: 24px; line-height: 32px; font-weight: 700; font-variant-numeric: tabular-nums; }
+@utility type-price-m { font-size: 16px; line-height: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+@utility type-price-s { font-size: 14px; line-height: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+@utility type-price-strike { font-size: 12px; line-height: 16px; font-weight: 400; text-decoration: line-through; }
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg-canvas);
+    color: var(--text-primary);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+}
