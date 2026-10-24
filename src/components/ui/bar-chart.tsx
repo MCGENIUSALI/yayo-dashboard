@@ -10,10 +10,13 @@ export function BarChart({ data, format, className, highlightLast = true }: { da
           const last = highlightLast && i === data.length - 1;
           return (
             <div key={d.label} role="listitem" className="group relative flex h-full flex-1 flex-col justify-end" aria-label={`${d.label} : ${format(d.value)}`}>
-              <span className="pointer-events-none absolute -top-1 left-1/2 z-10 -translate-x-1/2 -translate-y-full rounded-sm bg-inverse px-2 py-1 type-caption whitespace-nowrap text-fg-inverse opacity-0 transition group-hover:opacity-100">
+              <span className="pointer-events-none absolute -top-1 left-1/2 z-10 -translate-x-1/2 -translate-y-full rounded-sm bg-inverse px-2 py-1 type-caption whitespace-nowrap text-fg-inverse opacity-0 transition-opacity duration-(--duration-fast) group-hover:opacity-100">
                 {format(d.value)}
               </span>
-              <span className={cn("block w-full rounded-t-sm transition-colors", last ? "bg-accent" : "bg-surface-sunken group-hover:bg-line-strong")} style={{ height: `${Math.max((d.value / max) * 100, 3)}%` }} />
+              <span
+                className={cn("block w-full origin-bottom animate-bar-in rounded-t-sm transition-colors duration-(--duration-instant)", last ? "bg-accent" : "bg-surface-sunken group-hover:bg-line-strong")}
+                style={{ height: `${Math.max((d.value / max) * 100, 3)}%`, animationDelay: `${i * 30}ms` }}
+              />
             </div>
           );
         })}

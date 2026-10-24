@@ -31,19 +31,44 @@ interface BaseProps {
 
 export function buttonClass({ variant = "primary", size = "md", block }: BaseProps = {}) {
   return cn(
-    "inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap transition-colors disabled:bg-disabled disabled:text-fg-disabled disabled:border-transparent",
+    "pressable relative inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap disabled:bg-disabled disabled:text-fg-disabled disabled:border-transparent",
     styles[variant],
     sizes[size],
     block && "w-full min-w-0 shrink",
   );
 }
 
-export function Button({ variant, size, icon, iconRight, block, className, children, ...props }: BaseProps & ComponentProps<"button">) {
+/** Indeterminate spinner. It fades in after 150 ms so fast operations never flash a loader. */
+export function Spinner({ className }: { className?: string }) {
+  return <span data-spinner aria-hidden className={cn("inline-block size-4 animate-spin rounded-full border-2 border-current border-r-transparent", className)} />;
+}
+
+/**
+ * `loading`: keeps the button's size and focus, swaps the content for a
+ * spinner and ignores clicks (the async hook also guards double submits).
+ * Stays a server-compatible component: no handler is created here.
+ */
+export function Button({ variant, size, icon, iconRight, block, loading, className, children, onClick, ...props }: BaseProps & { loading?: boolean } & ComponentProps<"button">) {
   return (
-    <button type="button" className={cn(buttonClass({ variant, size, block }), className)} {...props}>
-      {icon}
-      {children}
-      {iconRight}
+    <button
+      type="button"
+      aria-busy={loading || undefined}
+      aria-disabled={loading || undefined}
+      onClick={loading ? undefined : onClick}
+      className={cn(buttonClass({ variant, size, block }), loading && "cursor-progress", className)}
+      {...props}
+    >
+      <span className={cn("contents [&>*]:transition-opacity [&>*]:duration-(--duration-instant)", loading && "[&>*]:opacity-0")}>
+        {icon}
+        {children != null && <span>{children}</span>}
+        {iconRight}
+      </span>
+      {loading && (
+        <span className="absolute inset-0 flex animate-delayed-in items-center justify-center">
+          <Spinner />
+          <span className="sr-only">En cours</span>
+        </span>
+      )}
     </button>
   );
 }
@@ -65,7 +90,7 @@ export function IconButton({ label, variant = "secondary", className, children, 
       aria-label={label}
       title={label}
       className={cn(
-        "inline-flex size-10 shrink-0 items-center justify-center rounded-md transition-colors",
+        "pressable inline-flex size-10 shrink-0 items-center justify-center rounded-md",
         variant === "secondary" && "bg-surface-sunken text-fg hover:bg-line",
         variant === "ghost" && "text-fg hover:bg-surface-sunken",
         variant === "primary" && "bg-brand text-fg-inverse",

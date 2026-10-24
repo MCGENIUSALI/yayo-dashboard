@@ -34,10 +34,10 @@ export function PostsGrid({ posts }: { posts: Post[] }) {
           Programme une vidéo ou des photos pour qu’elles sortent au meilleur moment.
         </EmptyState>
       ) : (
-        <ul className="grid grid-cols-3 gap-1.5 md:grid-cols-4 md:gap-3 xl:grid-cols-6">
+        <ul key={tab} className="grid animate-fade-in grid-cols-3 gap-1.5 md:grid-cols-4 md:gap-3 xl:grid-cols-6">
           {list.map((p) => (
             <li key={p.id}>
-              <Link href={`/vendeur/contenus/${p.id}`} aria-label={p.caption} className="block transition hover:opacity-90">
+              <Link href={`/vendeur/contenus/${p.id}`} aria-label={p.caption} className="pressable block rounded-md hover:opacity-90">
                 <PostTile swatch={p.cover} caption={p.caption} kind={p.kind} views={p.state === "published" ? p.stats.views : undefined} />
               </Link>
             </li>

@@ -24,3 +24,28 @@ export function Alert({ tone = "info", title, children, icon, action, className 
     </div>
   );
 }
+
+/**
+ * Failure of an action the user just triggered: stays until retried or
+ * dismissed, announced immediately, with the retry next to the message.
+ */
+export function ActionError({ error, onRetry, className }: { error: string | null; onRetry?: () => void; className?: string }) {
+  if (!error) return null;
+  return (
+    <div role="alert" className={cn("animate-fade-in", className)}>
+      <Alert
+        tone="danger"
+        title="L’opération a échoué"
+        action={
+          onRetry && (
+            <button type="button" onClick={onRetry} className="pressable -my-1 h-9 shrink-0 self-center rounded-md bg-surface px-3 type-label-s text-fg shadow-e1 hover:bg-surface-muted">
+              Réessayer
+            </button>
+          )
+        }
+      >
+        {error}
+      </Alert>
+    </div>
+  );
+}

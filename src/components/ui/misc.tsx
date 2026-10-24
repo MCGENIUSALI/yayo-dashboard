@@ -29,7 +29,7 @@ export function ListRow({ icon, title, subtitle, href, trailing, className }: { 
       {trailing ?? (href && <ChevronRight className="size-5 shrink-0 text-fg-tertiary" />)}
     </>
   );
-  const cls = cn("flex items-center gap-3 px-4 py-3", href && "transition-colors hover:bg-surface-muted", className);
+  const cls = cn("flex items-center gap-3 px-4 py-3", href && "transition-colors duration-(--duration-instant) hover:bg-surface-muted active:bg-surface-sunken", className);
   return href ? (
     <Link href={href} className={cls}>
       {inner}

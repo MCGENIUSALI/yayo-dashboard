@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import { MasterDetail } from "@/components/admin/master-detail";
-import { Alert } from "@/components/ui/alert";
+import { ActionError, Alert } from "@/components/ui/alert";
 import { Badge, type Tone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Overline } from "@/components/ui/card";
 import { ProductThumb } from "@/components/ui/media";
 import { PaymentBadge } from "@/components/ui/status";
 import { Timeline } from "@/components/ui/timeline";
+import { useToast } from "@/components/ui/toast";
+import { useAsyncAction } from "@/hooks/use-async-action";
+import { decideDispute } from "@/lib/actions";
 import { formatFC } from "@/lib/format";
 import type { Dispute, DisputeReason } from "@/lib/types";
 
@@ -26,7 +29,22 @@ const decisionText: Record<Decision, string> = {
   reject: "Litige rejeté : paiement libéré au vendeur.",
 };
 
+const decisionLabel: Record<Decision, string> = {
+  refund: "Rembourser l’acheteur",
+  exchange: "Lancer un échange",
+  reject: "Rejeter et payer le vendeur",
+};
+
+/** Money moves on every decision: each one goes through an explicit confirmation step. */
 function DisputeDetail({ d, decided, onDecide }: { d: Dispute; decided?: Decision; onDecide: (x: Decision) => void }) {
+  const toast = useToast();
+  const [confirming, setConfirming] = useState<Decision | null>(null);
+  const decide = useAsyncAction(async (x: Decision) => {
+    await decideDispute(d.id, x);
+    onDecide(x);
+    setConfirming(null);
+    toast({ tone: "success", title: "Décision enregistrée", description: `Litige #${d.id}` });
+  });
   return (
     <div className="flex flex-col gap-5">
       <div className="hidden flex-wrap items-center gap-2 lg:flex">
@@ -47,18 +65,32 @@ function DisputeDetail({ d, decided, onDecide }: { d: Dispute; decided?: Decisio
       <div className="flex flex-col gap-2">
         <Overline>Décision</Overline>
         {decided ? (
-          <Alert tone="success" title="Décision enregistrée">
+          <Alert className="animate-fade-in" tone="success" title="Décision enregistrée">
             {decisionText[decided]}
           </Alert>
+        ) : confirming ? (
+          <div className="flex animate-page-in flex-col gap-3 rounded-lg border border-line p-4">
+            <p className="type-label-l">{decisionLabel[confirming]} ?</p>
+            <p className="type-body-m text-fg-secondary">{decisionText[confirming]} Cette décision est définitive.</p>
+            <ActionError error={decide.error} />
+            <div className="flex gap-2">
+              <Button variant="outline" block disabled={decide.pending} onClick={() => setConfirming(null)}>
+                Annuler
+              </Button>
+              <Button variant={confirming === "refund" ? "danger" : "primary"} block loading={decide.pending} onClick={() => decide.run(confirming)}>
+                {decide.error ? "Réessayer" : "Confirmer"}
+              </Button>
+            </div>
+          </div>
         ) : (
           <>
-            <Button size="lg" block onClick={() => onDecide("refund")}>
+            <Button size="lg" block onClick={() => setConfirming("refund")}>
               Rembourser l’acheteur ({formatFC(d.amount)})
             </Button>
-            <Button size="lg" variant="outline" block onClick={() => onDecide("exchange")}>
+            <Button size="lg" variant="outline" block onClick={() => setConfirming("exchange")}>
               Échange : retour au vendeur
             </Button>
-            <Button size="lg" variant="ghost" block onClick={() => onDecide("reject")}>
+            <Button size="lg" variant="ghost" block onClick={() => setConfirming("reject")}>
               Rejeter et payer le vendeur
             </Button>
           </>

@@ -44,7 +44,7 @@ export default async function AdminDashboard() {
 
       <section aria-label="Alertes" className="grid gap-3 md:grid-cols-3">
         {alerts.map(({ href, tone, icon: Icon, title, body }) => (
-          <Link key={href} href={href} className={cn("flex gap-3 rounded-lg p-4 transition hover:opacity-90", tone)}>
+          <Link key={href} href={href} className={cn("pressable flex gap-3 rounded-lg p-4 hover:opacity-90", tone)}>
             <Icon className="mt-0.5 size-5 shrink-0" />
             <span>
               <span className="block type-label-m">{title}</span>

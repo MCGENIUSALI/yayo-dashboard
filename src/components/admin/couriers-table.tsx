@@ -1,11 +1,14 @@
 "use client";
 
-import { Star } from "lucide-react";
+import { Check, Star } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { Chips } from "@/components/ui/segmented";
+import { useToast } from "@/components/ui/toast";
+import { useAsyncAction } from "@/hooks/use-async-action";
+import { remindCourier } from "@/lib/actions";
 import { formatFC } from "@/lib/format";
 import type { Courier } from "@/lib/types";
 
@@ -15,9 +18,28 @@ const status: Record<Courier["status"], { label: string; tone: "success" | "info
   offline: { label: "Hors ligne", tone: "neutral" },
 };
 
+/** One request state per row: reminding a courier never blocks the other rows. */
+function RemindButton({ courier }: { courier: Courier }) {
+  const toast = useToast();
+  const remind = useAsyncAction(async () => {
+    await remindCourier(courier.id);
+    toast({ tone: "success", title: "Relance envoyée", description: `${courier.name} · ${formatFC(courier.cashToReturn)} à reverser` });
+  });
+  if (remind.status === "success")
+    return (
+      <Button size="sm" variant="secondary" disabled icon={<Check className="size-3.5" />}>
+        Relancé
+      </Button>
+    );
+  return (
+    <Button size="sm" variant={remind.error ? "danger" : "primary"} loading={remind.pending} title={remind.error ?? undefined} onClick={() => remind.run()}>
+      {remind.error ? "Échec · Réessayer" : "Relancer"}
+    </Button>
+  );
+}
+
 export function CouriersTable({ couriers }: { couriers: Courier[] }) {
   const [filter, setFilter] = useState<"all" | "cash" | Courier["status"]>("all");
-  const [reminded, setReminded] = useState<string[]>([]);
   const list = couriers.filter((c) => (filter === "all" ? true : filter === "cash" ? c.cashToReturn > 0 : c.status === filter));
   return (
     <div className="flex flex-col gap-4">
@@ -46,9 +68,7 @@ export function CouriersTable({ couriers }: { couriers: Courier[] }) {
         ]}
         action={(c) =>
           c.cashToReturn > 0 ? (
-            <Button size="sm" variant={reminded.includes(c.id) ? "secondary" : "primary"} disabled={reminded.includes(c.id)} onClick={() => setReminded((r) => [...r, c.id])}>
-              {reminded.includes(c.id) ? "Relancé ✓" : "Relancer"}
-            </Button>
+            <RemindButton courier={c} />
           ) : (
             <Button size="sm" variant="outline">
               Voir
