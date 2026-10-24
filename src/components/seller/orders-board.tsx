@@ -28,13 +28,13 @@ export function OrdersBoard({ orders }: { orders: Order[] }) {
         ]}
       />
       {list.length ? (
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div key={tab} className="grid animate-fade-in gap-3 md:grid-cols-2 xl:grid-cols-3">
           {list.map((o) => (
             <SellerOrderCard key={o.id} order={o} />
           ))}
         </div>
       ) : (
-        <EmptyState icon={<Package />} title="Aucune commande ici">
+        <EmptyState key={tab} icon={<Package />} title="Aucune commande ici">
           Les nouvelles commandes payées apparaissent ici dès que les fonds sont sécurisés.
         </EmptyState>
       )}

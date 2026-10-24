@@ -19,7 +19,7 @@ export function SellerOrderCard({ order }: { order: Order }) {
   const { net } = orderBreakdown(order);
   const action = cta[order.sellerStatus];
   return (
-    <article className="flex flex-col gap-3 rounded-lg border border-line-subtle bg-surface p-4">
+    <article className="flex flex-col gap-3 rounded-lg border border-line-subtle bg-surface p-4 transition-[border-color,box-shadow] duration-(--duration-fast) hover:border-line hover:shadow-e1">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <Link href={`/vendeur/commandes/${order.id}`} className="type-label-l hover:underline">

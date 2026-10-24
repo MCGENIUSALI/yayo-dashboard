@@ -1,20 +1,35 @@
 "use client";
 
+import { UserCheck } from "lucide-react";
 import { useState } from "react";
 import { MasterDetail } from "@/components/admin/master-detail";
-import { Alert } from "@/components/ui/alert";
+import { ActionError, Alert } from "@/components/ui/alert";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Overline } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/misc";
 import { ProductThumb } from "@/components/ui/media";
 import { Chips } from "@/components/ui/segmented";
 import { KycBadge } from "@/components/ui/status";
+import { useToast } from "@/components/ui/toast";
+import { useAsyncAction } from "@/hooks/use-async-action";
+import { decideKyc } from "@/lib/actions";
 import type { KycFile, KycStatus } from "@/lib/types";
 
 type Filter = "all" | "courier" | "seller" | "rejected";
 
+const decisionToast: Partial<Record<KycStatus, string>> = { approved: "Compte validé", rejected: "Dossier refusé", unreadable: "Nouvelle pièce demandée" };
+
 function KycDetail({ f, onDecide }: { f: KycFile; onDecide: (s: KycStatus) => void }) {
+  const toast = useToast();
   const done = f.status === "approved" || f.status === "rejected";
+  const decide = useAsyncAction(async (s: KycStatus) => {
+    await decideKyc(f.id, s);
+    onDecide(s);
+    toast({ tone: "success", title: decisionToast[s] ?? "Décision enregistrée", description: f.name });
+  });
+  const running = (s: KycStatus) => decide.pending && decide.args?.[0] === s;
+  const secondary: KycStatus = f.status === "unreadable" ? "rejected" : "unreadable";
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center gap-3">
@@ -60,17 +75,20 @@ function KycDetail({ f, onDecide }: { f: KycFile; onDecide: (s: KycStatus) => vo
         </div>
       </dl>
       {done ? (
-        <Alert tone={f.status === "approved" ? "success" : "danger"} title={f.status === "approved" ? "Compte validé" : "Dossier refusé"}>
+        <Alert className="animate-fade-in" tone={f.status === "approved" ? "success" : "danger"} title={f.status === "approved" ? "Compte validé" : "Dossier refusé"}>
           {f.status === "approved" ? "La personne peut désormais travailler sur YA YO." : "Un message expliquant le refus a été envoyé."}
         </Alert>
       ) : (
-        <div className="flex gap-2">
-          <Button variant="outline" size="lg" block onClick={() => onDecide(f.status === "unreadable" ? "rejected" : "unreadable")}>
-            {f.status === "unreadable" ? "Refuser" : "Pièce illisible"}
-          </Button>
-          <Button size="lg" block onClick={() => onDecide("approved")}>
-            Valider le {f.role === "courier" ? "livreur" : "vendeur"}
-          </Button>
+        <div className="flex flex-col gap-3">
+          <ActionError error={decide.error} onRetry={() => decide.args && decide.run(...decide.args)} />
+          <div className="flex gap-2">
+            <Button variant="outline" size="lg" block loading={running(secondary)} disabled={decide.pending && !running(secondary)} onClick={() => decide.run(secondary)}>
+              {f.status === "unreadable" ? "Refuser" : "Pièce illisible"}
+            </Button>
+            <Button size="lg" block loading={running("approved")} disabled={decide.pending && !running("approved")} onClick={() => decide.run("approved")}>
+              Valider le {f.role === "courier" ? "livreur" : "vendeur"}
+            </Button>
+          </div>
         </div>
       )}
     </div>
@@ -96,7 +114,7 @@ export function KycAdmin({ files }: { files: KycFile[] }) {
         ]}
       />
       <MasterDetail
-        key={filter}
+        empty={<EmptyState icon={<UserCheck />} title="Aucun dossier">Rien à valider dans cette catégorie.</EmptyState>}
         rows={list}
         rowKey={(f) => f.id}
         title={(f) => `#${f.id} · ${f.name}`}

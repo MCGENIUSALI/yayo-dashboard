@@ -1,11 +1,11 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Package, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { MasterDetail } from "@/components/admin/master-detail";
 import { Overline } from "@/components/ui/card";
 import { Input } from "@/components/ui/form";
-import { MoneyRow } from "@/components/ui/misc";
+import { EmptyState, MoneyRow } from "@/components/ui/misc";
 import { Chips } from "@/components/ui/segmented";
 import { DeliveryBadge, PaymentBadge } from "@/components/ui/status";
 import { Timeline, type StepState } from "@/components/ui/timeline";
@@ -95,7 +95,7 @@ export function OrdersAdmin({ orders, initialId }: { orders: Order[]; initialId?
         </div>
       </div>
       <MasterDetail
-        key={filter + q}
+        empty={<EmptyState icon={<Package />} title="Aucune commande trouvée">Modifie le filtre ou la recherche.</EmptyState>}
         rows={list}
         rowKey={(o) => o.id}
         initialKey={initialId}

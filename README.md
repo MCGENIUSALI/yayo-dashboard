@@ -15,6 +15,7 @@ npm run dev        # http://localhost:3000
 npm run build      # build de production
 npm run lint
 npm run typecheck
+npm run test:e2e   # tests d'interaction Playwright (après npm run build)
 ```
 
 Node 20.9+ requis (voir `.nvmrc`).
@@ -78,4 +79,46 @@ Règles reprises du cahier des charges : commission prélevée sur le vendeur un
 
 ### Brancher le backend
 
-Toutes les pages appellent les fonctions `async` de `src/lib/api.ts`. Remplacer leur corps par des `fetch` vers l'API YA YO suffit ; les actions (valider un KYC, trancher un litige, libérer des fonds…) sont aujourd'hui locales aux composants et pourront devenir des Server Actions.
+Toutes les pages appellent les fonctions `async` de `src/lib/api.ts` (lectures). Les écritures (valider un KYC, trancher un litige, libérer des fonds…) passent par `src/lib/actions.ts` : chaque fonction doit se résoudre seulement quand l'API a confirmé, et lever une `Error` avec un message lisible sinon. Remplacer leur corps par des `fetch` (ou des Server Actions) suffit, l'interface gère déjà les états.
+
+Pour tester les cas lents et les échecs sans backend : ajouter `?simuler=lent` ou `?simuler=echec` à l'URL (mémorisé pour l'onglet, `?simuler=normal` pour revenir).
+
+## Interactions et motion
+
+Règles communes à tout le dashboard, à respecter pour les nouveaux écrans.
+
+**Tokens** (`globals.css`, miroir JS dans `src/lib/motion.ts`)
+
+| Token | Valeur | Usage |
+|---|---|---|
+| `--duration-instant` | 120 ms | pression, couleur, hover |
+| `--duration-fast` | 160 ms | tooltips, petits changements d'état |
+| `--duration-base` | 200 ms | onglets, entrée de page, toasts (sortie) |
+| `--duration-slow` | 260 ms | sheets, dialogues, largeur du menu |
+| `--duration-drawer` | 300 ms | menu mobile |
+| `--ease-out` | `cubic-bezier(.22,1,.36,1)` | entrées |
+| `--ease-in` | `cubic-bezier(.55,0,1,.45)` | sorties |
+| `--ease-standard` | `cubic-bezier(.4,0,.2,1)` | changements d'état |
+
+Utilisation : `duration-(--duration-base) ease-(--ease-out)`. Pas de rebond ni d'effet élastique. Les animations d'entrée utilisent le remplissage `backwards` : une fois finies, elles ne laissent ni transform ni opacité (sinon les éléments `fixed` à l'intérieur seraient piégés).
+
+**Briques**
+
+- `pressable` (utilitaire CSS) : légère compression au clic sur tout ce qui est cliquable.
+- `Button loading` : spinner à taille constante, apparaît après 150 ms (pas de clignotement sur les appels rapides), clics ignorés.
+- `useAsyncAction` (`src/hooks`) : `idle → pending → success | error`, bloque la double soumission, ignore les résultats après démontage, expose `args` pour savoir quel bouton tourne.
+- `ActionError` : erreur persistante, annoncée (`role="alert"`), avec « Réessayer ». `useToast()` : confirmations temporaires (4 s, pause au survol). Jamais de succès affiché avant la réponse de l'API.
+- `Sheet` : portail, entrée/sortie animées, focus piégé puis rendu au déclencheur, scroll de la page bloqué, Escape. `busy` empêche de fermer pendant une opération.
+- `useOverlay` : comportement commun des couches modales (pile Escape, focus, scroll). `usePresence` : garde un élément monté pendant sa sortie.
+- `Field` relie automatiquement le message d'aide ou d'erreur au champ (`aria-describedby`, `aria-invalid`). Les erreurs apparaissent à la soumission ou en quittant un champ rempli, pas pendant la première saisie.
+- Les opérations qui déplacent de l'argent ou suppriment (litige, libération de séquestre, suppression produit, suspension) passent par une confirmation.
+
+**Menu latéral**
+
+- Desktop (≥ 1024 px) : repliable en rail d'icônes (bouton « Réduire le menu »), état mémorisé et appliqué avant le premier rendu (pas de saut au chargement). Libellés en fondu, tooltips en mode replié, indicateur actif qui glisse d'un élément à l'autre (transform). L'élément actif vient de l'URL (`usePathname`), un point orange signale une navigation en cours.
+- Mobile admin : panneau overlay depuis la gauche, backdrop en fondu, focus piégé, fermeture par ✕, backdrop, Escape ou navigation, scroll et focus restaurés, safe areas respectées. Passer au-dessus de 1024 px le ferme et rend la main au rail.
+- Mobile vendeur : barre d'onglets inchangée, avec retour au toucher.
+
+**Mouvement réduit** : avec `prefers-reduced-motion`, plus aucun déplacement (slides, montée de page, compression), seuls des fondus très courts restent pour que les changements d'état restent visibles.
+
+**Tests** : `e2e/` couvre menu (repli rapide, navigation pendant l'animation, URL directe, tooltip), menu mobile (focus, Escape, backdrop, redimensionnement), sheets (clavier, opération en cours), états async (lent, échec puis réessai, clics multiples), formulaires, mouvement réduit, absence d'erreurs console et de débordement horizontal sur les 25 écrans, en desktop et mobile.

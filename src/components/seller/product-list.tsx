@@ -59,9 +59,9 @@ export function ProductList({ products }: { products: Product[] }) {
           Modifie ta recherche ou ajoute un nouveau produit.
         </EmptyState>
       ) : (
-        <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <ul key={filter} className="grid animate-fade-in gap-3 md:grid-cols-2 xl:grid-cols-3">
           {list.map((p) => (
-            <li key={p.id} className="flex flex-col gap-3 rounded-lg border border-line-subtle bg-surface p-4">
+            <li key={p.id} className="flex flex-col gap-3 rounded-lg border border-line-subtle bg-surface p-4 transition-[border-color,box-shadow] duration-(--duration-fast) hover:border-line hover:shadow-e1">
               <div className="flex gap-3">
                 <ProductThumb swatch={p.image} name={p.name} className="size-20" />
                 <div className="min-w-0 flex-1">

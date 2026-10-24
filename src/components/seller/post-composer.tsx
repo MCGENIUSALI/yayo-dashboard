@@ -3,13 +3,16 @@
 import { Clapperboard, Image as ImageIcon, Link2, MessageCircle, Repeat2, ShoppingCart, Volume2, Video } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Alert } from "@/components/ui/alert";
+import { ActionError } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox, Field, Input, SwitchRow } from "@/components/ui/form";
 import { PostTile, ProductThumb } from "@/components/ui/media";
 import { Segmented } from "@/components/ui/segmented";
 import { Sheet } from "@/components/ui/sheet";
+import { useToast } from "@/components/ui/toast";
+import { useAsyncAction } from "@/hooks/use-async-action";
+import { publishPost } from "@/lib/actions";
 import { cn } from "@/lib/cn";
 import { formatFC, formatUSD } from "@/lib/format";
 import type { Product } from "@/lib/types";
@@ -27,15 +30,17 @@ export function PostComposer({ products }: { products: Product[] }) {
   const [picker, setPicker] = useState(false);
   const [draft, setDraft] = useState<string[]>(linked);
   const [opts, setOpts] = useState({ comments: true, share: true, order: true });
-  const [done, setDone] = useState<string | null>(null);
 
   const linkable = products.filter((p) => p.online);
   const hasContact = CONTACT_RE.test(caption);
 
-  function publish(label: string) {
-    setDone(label);
-    setTimeout(() => router.push("/vendeur/contenus"), 800);
-  }
+  const toast = useToast();
+  const publish = useAsyncAction(async (scheduled: boolean) => {
+    await publishPost(scheduled);
+    toast({ tone: "success", title: scheduled ? "Publication programmée" : "Publication en ligne", description: `${linked.length} produit${linked.length > 1 ? "s" : ""} lié${linked.length > 1 ? "s" : ""}` });
+    router.push("/vendeur/contenus");
+  });
+  const scheduled = publish.args?.[0] === true;
 
   return (
     <div className="flex flex-col gap-5 pb-24 lg:pb-0">
@@ -48,7 +53,7 @@ export function PostComposer({ products }: { products: Product[] }) {
         ]}
       />
 
-      <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:items-start">
         <Card className="flex flex-col gap-5 p-4 md:p-5">
           <div className="flex gap-3">
             <PostTile swatch="sun" caption="Aperçu" kind={kind} className="w-32 shrink-0 md:w-40" />
@@ -81,7 +86,7 @@ export function PostComposer({ products }: { products: Product[] }) {
                   setDraft(linked);
                   setPicker(true);
                 }}
-                className="inline-flex items-center gap-1.5 type-label-m hover:underline"
+                className="pressable inline-flex items-center gap-1.5 rounded-sm type-label-m hover:underline"
               >
                 <Link2 className="size-4" /> Lier un produit
               </button>
@@ -116,14 +121,14 @@ export function PostComposer({ products }: { products: Product[] }) {
         </div>
       </div>
 
-      {done && <Alert tone="success" title={done} />}
+      <ActionError error={publish.error} onRetry={() => publish.run(scheduled)} />
 
       <div className="fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-30 border-t border-line-subtle bg-surface p-4 lg:static lg:border-0 lg:bg-transparent lg:p-0">
         <div className="mx-auto flex max-w-xl gap-2 lg:mx-0">
-          <Button variant="outline" size="lg" onClick={() => publish("Publication programmée")}>
+          <Button variant="outline" size="lg" loading={publish.busy && scheduled} disabled={publish.busy && !scheduled} onClick={() => publish.run(true)}>
             Programmer
           </Button>
-          <Button size="lg" className="flex-1 lg:flex-none lg:px-10" onClick={() => publish("Publication en ligne")}>
+          <Button size="lg" className="flex-1 lg:flex-none lg:px-10" loading={publish.busy && !scheduled} disabled={publish.busy && scheduled} onClick={() => publish.run(false)}>
             Publier
           </Button>
         </div>
@@ -156,7 +161,7 @@ export function PostComposer({ products }: { products: Product[] }) {
             const full = !checked && draft.length >= MAX_LINKED;
             return (
               <li key={p.id}>
-                <label className={cn("flex items-center gap-3 py-2.5", (out || full) && "opacity-50")}>
+                <label className={cn("-mx-2 flex cursor-pointer items-center gap-3 rounded-md px-2 py-2.5 transition-colors duration-(--duration-instant) hover:bg-surface-muted", (out || full) && "cursor-not-allowed opacity-50 hover:bg-transparent")}>
                   <ProductThumb swatch={p.image} name={p.name} className="size-11" />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate type-label-m">{p.name}</span>

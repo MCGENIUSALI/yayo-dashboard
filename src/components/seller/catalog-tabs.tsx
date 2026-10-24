@@ -16,7 +16,7 @@ export function CatalogTabs() {
       {tabs.map((t) => {
         const active = pathname.startsWith(t.href);
         return (
-          <Link key={t.href} href={t.href} aria-current={active ? "page" : undefined} className={cn("flex h-9 flex-1 items-center justify-center rounded-md px-4 type-label-m md:flex-none", active ? "bg-surface shadow-e1" : "text-fg-secondary hover:text-fg")}>
+          <Link key={t.href} href={t.href} aria-current={active ? "page" : undefined} className={cn("pressable flex h-9 flex-1 items-center justify-center rounded-md px-4 type-label-m md:flex-none", active ? "bg-surface shadow-e1" : "text-fg-secondary hover:text-fg")}>
             {t.label}
           </Link>
         );

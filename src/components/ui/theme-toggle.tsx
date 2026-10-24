@@ -24,7 +24,7 @@ export function ThemeToggle({ className }: { className?: string }) {
   }
 
   return (
-    <button type="button" onClick={toggle} aria-label={dark ? "Passer en thème clair" : "Passer en thème sombre"} className={className ?? "flex size-10 items-center justify-center rounded-md text-fg hover:bg-surface-sunken"}>
+    <button type="button" onClick={toggle} aria-label={dark ? "Passer en thème clair" : "Passer en thème sombre"} className={className ?? "pressable flex size-10 items-center justify-center rounded-md text-fg hover:bg-surface-sunken"}>
       {dark ? <Sun className="size-5" /> : <Moon className="size-5" />}
     </button>
   );

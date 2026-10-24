@@ -18,7 +18,7 @@ export default function Home() {
       <ul className="grid gap-4 md:grid-cols-2">
         {spaces.map(({ href, icon: Icon, title, body }) => (
           <li key={href}>
-            <Link href={href} className="group flex h-full flex-col gap-4 rounded-xl border border-line-subtle bg-surface p-6 shadow-e1 transition hover:shadow-e2">
+            <Link href={href} className="group flex h-full flex-col gap-4 rounded-xl border border-line-subtle bg-surface p-6 shadow-e1 transition-[box-shadow,transform,border-color] duration-(--duration-fast) ease-(--ease-standard) hover:border-line hover:shadow-e2 active:scale-[0.99]">
               <span className="flex size-12 items-center justify-center rounded-md bg-accent-subtle text-fg-accent">
                 <Icon className="size-6" />
               </span>
@@ -27,7 +27,7 @@ export default function Home() {
                 <p className="mt-1 type-body-m text-fg-secondary">{body}</p>
               </div>
               <span className="inline-flex items-center gap-1.5 type-label-m">
-                Ouvrir <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
+                Ouvrir <ArrowRight className="size-4 transition-transform duration-(--duration-fast) ease-(--ease-out) group-hover:translate-x-0.5" />
               </span>
             </Link>
           </li>

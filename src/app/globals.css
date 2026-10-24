@@ -7,6 +7,8 @@
  */
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+/* Desktop rail folded to icons. Set on <html> before first paint (see lib/theme.ts), scoped to the rail. */
+@custom-variant collapsed (&:where([data-sidebar="collapsed"] [data-rail], [data-sidebar="collapsed"] [data-rail] *));
 
 :root {
   /* Primitives: neutral */
@@ -199,6 +201,54 @@
   --shadow-e2: 0 4px 12px rgb(10 10 11 / 0.08);
   --shadow-e3: 0 12px 32px rgb(10 10 11 / 0.14);
   --shadow-focus: 0 0 0 3px var(--orange-100);
+
+  /*
+   * Motion. One scale for the whole app, mirrored in src/lib/motion.ts for the
+   * JS timers. Usage: duration-(--duration-base) ease-(--ease-out).
+   *   instant 120  press feedback, colour / hover changes
+   *   fast    160  tooltips, small state changes
+   *   base    200  dropdowns, segmented, page enter
+   *   slow    260  sheets, dialogs, sidebar width
+   *   drawer  300  mobile drawer
+   */
+  --duration-instant: 120ms;
+  --duration-fast: 160ms;
+  --duration-base: 200ms;
+  --duration-slow: 260ms;
+  --duration-drawer: 300ms;
+  /* Enter: quick start, long settle. Exit: accelerates away. Standard: state change. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-press: cubic-bezier(0.3, 0, 0.5, 1);
+
+  /* Fill mode `backwards`: once finished, an enter animation leaves no transform/opacity behind
+     (a filling transform would trap position:fixed descendants such as sheets). */
+  --animate-page-in: page-in var(--duration-base) var(--ease-out) backwards;
+  --animate-toast-in: toast-in var(--duration-slow) var(--ease-out) backwards;
+  --animate-fade-in: fade-in var(--duration-base) var(--ease-out) backwards;
+  --animate-delayed-in: fade-in var(--duration-fast) var(--ease-out) 150ms backwards;
+  --animate-skeleton-in: fade-in var(--duration-base) var(--ease-out) 150ms backwards;
+  --animate-bar-in: bar-in var(--duration-slow) var(--ease-out) backwards;
+  --animate-shimmer: shimmer 1.4s linear infinite;
+  --animate-spin: spin 0.7s linear infinite;
+
+  @keyframes page-in {
+    from { opacity: 0; transform: translateY(var(--motion-distance)); }
+  }
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(var(--toast-from, 8px)) scale(0.98); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+  }
+  @keyframes bar-in {
+    from { transform: scaleY(0); }
+  }
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
 }
 
 /* Typography: 17 styles, one family (Inter). */
@@ -225,8 +275,42 @@
   &::-webkit-scrollbar { display: none; }
 }
 
+/* Pressable surfaces: a short compression on press, no layout change. */
+@utility pressable {
+  transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+  transition-duration: var(--duration-instant);
+  transition-timing-function: var(--ease-standard);
+  &:active:not(:disabled):not([aria-disabled="true"]) { transform: scale(0.97); transition-timing-function: var(--ease-press); }
+}
+
+/* Skeleton block with a moving highlight (static under reduced motion). */
+@utility skeleton {
+  background: linear-gradient(90deg, var(--bg-surface-sunken) 30%, var(--bg-surface-muted) 50%, var(--bg-surface-sunken) 70%);
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+:root { --motion-distance: 6px; --sidebar-w: 16rem; }
+:root[data-sidebar="collapsed"] { --sidebar-w: 4.5rem; }
+
+/*
+ * Reduced motion: movement is removed, fades are kept very short so state
+ * changes stay perceptible. Continuous animations (shimmer, spinners) stop.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion-distance: 0px; }
+  *, ::before, ::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+  .motion-fade { transition-duration: var(--duration-instant) !important; }
+  [data-spinner] { animation: none !important; border-right-color: currentColor !important; opacity: 0.6; }
+}
+
 @layer base {
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; -webkit-tap-highlight-color: transparent; }
   body {
     background: var(--bg-canvas);
     color: var(--text-primary);
@@ -234,6 +318,7 @@
     -webkit-font-smoothing: antialiased;
   }
   :focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }
+  button, a, [role="tab"], label { touch-action: manipulation; }
   button { cursor: pointer; }
   button:disabled { cursor: not-allowed; }
 }

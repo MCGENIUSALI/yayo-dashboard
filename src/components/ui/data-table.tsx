@@ -45,7 +45,12 @@ export function DataTable<T>({ columns, rows, rowKey, title, action, empty, onRo
                 <tr
                   key={rowKey(r)}
                   onClick={onRowClick ? () => onRowClick(r) : undefined}
-                  className={cn("border-t border-line-subtle", onRowClick && "cursor-pointer hover:bg-surface-muted", selectedKey === rowKey(r) && "bg-accent-subtle/60")}
+                  aria-selected={onRowClick ? selectedKey === rowKey(r) : undefined}
+                  className={cn(
+                    "border-t border-line-subtle transition-[background-color,box-shadow] duration-(--duration-instant) ease-(--ease-standard)",
+                    onRowClick && "cursor-pointer hover:bg-surface-muted",
+                    selectedKey === rowKey(r) && "bg-accent-subtle/60 shadow-[inset_3px_0_0_var(--bg-accent)] hover:bg-accent-subtle/60",
+                  )}
                 >
                   {columns.map((c) => (
                     <td key={c.key} className={cn("px-4 py-3.5 type-body-m", c.className)}>
@@ -65,7 +70,11 @@ export function DataTable<T>({ columns, rows, rowKey, title, action, empty, onRo
           <li
             key={rowKey(r)}
             onClick={onRowClick ? () => onRowClick(r) : undefined}
-            className={cn("rounded-lg border border-line-subtle bg-surface p-4", selectedKey === rowKey(r) && "border-accent")}
+            className={cn(
+              "rounded-lg border border-line-subtle bg-surface p-4 transition-[border-color,background-color,transform] duration-(--duration-instant) ease-(--ease-standard)",
+              onRowClick && "cursor-pointer active:scale-[0.99] active:bg-surface-muted",
+              selectedKey === rowKey(r) && "border-accent",
+            )}
           >
             <div className="type-label-l">{title(r)}</div>
             <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-2">

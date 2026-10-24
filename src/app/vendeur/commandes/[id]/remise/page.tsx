@@ -41,7 +41,7 @@ export default async function HandoverPage({ params }: PageProps<"/vendeur/comma
       <Alert tone="info" icon={<PackageCheck />} title="Vérifie avant de remettre">
         Colis fermé, étiquette #{order.id} collée, {items} article{items > 1 ? "s" : ""}.
       </Alert>
-      <HandoverConfirm />
+      <HandoverConfirm orderId={order.id} />
     </div>
   );
 }

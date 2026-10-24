@@ -12,7 +12,7 @@ export function PageHeader({ title, eyebrow, description, actions, back, classNa
     <header className={cn("flex flex-col gap-4 md:flex-row md:items-end md:justify-between", className)}>
       <div className="flex min-w-0 items-center gap-3">
         {back && (
-          <Link href={back} aria-label="Retour" className="flex size-10 shrink-0 items-center justify-center rounded-md bg-surface-sunken hover:bg-line">
+          <Link href={back} aria-label="Retour" className="pressable flex size-10 shrink-0 items-center justify-center rounded-md bg-surface-sunken hover:bg-line">
             <ArrowLeft className="size-5" />
           </Link>
         )}
