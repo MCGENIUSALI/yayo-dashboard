@@ -1,9 +1,11 @@
 "use client";
 
-import { ArrowLeftRight, Bell, Menu, PanelLeftClose, PanelLeftOpen, Search, SlidersHorizontal, X } from "lucide-react";
+import { ArrowLeftRight, Bell, Menu, PanelLeftClose, PanelLeftOpen, Search, SlidersHorizontal, UserRound, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { SessionSync } from "@/components/auth/session-sync";
+import { SignOutRailAction } from "@/components/auth/sign-out-button";
 import { Avatar } from "@/components/ui/avatar";
 import { Logo } from "@/components/ui/logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -21,7 +23,10 @@ interface ShellProps {
   navKey: keyof typeof navs;
   root: string;
   space: string;
+  /** Display data of the signed-in account, resolved and authorised by the server layout. */
   user: { name: string; role: string };
+  /** The account can open more than one space. */
+  canSwitch?: boolean;
   notifications: { href: string; count: number };
   searchPlaceholder: string;
   /** "bottom": seller app tab bar under lg. "drawer": admin burger menu. */
@@ -46,7 +51,7 @@ function setCollapsed(next: boolean) {
   } catch {}
 }
 
-export function AppShell({ navKey, root, space, user, notifications, searchPlaceholder, mobileNav, children }: ShellProps) {
+export function AppShell({ navKey, root, space, user, canSwitch, notifications, searchPlaceholder, mobileNav, children }: ShellProps) {
   const nav = navs[navKey];
   const pathname = usePathname();
   const collapsed = useSyncExternalStore(subscribeSidebar, isCollapsed, () => false);
@@ -94,7 +99,9 @@ export function AppShell({ navKey, root, space, user, notifications, searchPlace
 
   const footer = (rail: boolean) => (
     <div className="mt-auto flex flex-col gap-1 border-t border-line-subtle py-3">
-      <RailAction href="/" label="Changer d’espace" icon={<ArrowLeftRight />} />
+      {canSwitch && <RailAction href="/" label="Changer d’espace" icon={<ArrowLeftRight />} />}
+      <RailAction href="/compte" label="Mon compte" icon={<UserRound />} />
+      <SignOutRailAction />
       {rail && (
         <RailAction
           label={collapsed ? "Déplier le menu" : "Réduire le menu"}
@@ -116,6 +123,7 @@ export function AppShell({ navKey, root, space, user, notifications, searchPlace
 
   return (
     <div className="min-h-dvh transition-[padding] duration-(--duration-slow) ease-(--ease-standard) lg:pl-(--sidebar-w)">
+      <SessionSync />
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-surface focus:px-3 focus:py-2">
         Aller au contenu
       </a>
@@ -220,7 +228,9 @@ export function AppShell({ navKey, root, space, user, notifications, searchPlace
                 <span className="absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 type-caption text-fg-on-accent">{notifications.count}</span>
               )}
             </Link>
-            <Avatar name={user.name} size="sm" className="ml-1 hidden sm:inline-flex" />
+            <Link href="/compte" aria-label="Mon compte" className="pressable ml-1 rounded-full">
+              <Avatar name={user.name} size="sm" />
+            </Link>
           </div>
         </div>
         {/* Mobile search row: unfolds under the bar (grid rows 0fr → 1fr, no fixed height). */}
