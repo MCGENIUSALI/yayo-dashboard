@@ -9,13 +9,18 @@ Back-office de la marketplace congolaise **YA YO!** (paiement sous séquestre, l
 
 ## Démarrer
 
+Un serveur Postgres est nécessaire (authentification et sessions, voir [docs/authentification.md](docs/authentification.md)).
+
 ```bash
 npm install
+cp .env.example .env.local   # DATABASE_URL, AUTH_SECRET…
+npm run db:migrate
 npm run dev        # http://localhost:3000
 npm run build      # build de production
 npm run lint
 npm run typecheck
-npm run test:e2e   # tests d'interaction Playwright (après npm run build)
+npm test           # tests unitaires et d'intégration de l'authentification (Postgres)
+npm run test:e2e   # tests Playwright : interactions + authentification (après npm run build)
 ```
 
 Node 20.9+ requis (voir `.nvmrc`).
@@ -23,14 +28,17 @@ Node 20.9+ requis (voir `.nvmrc`).
 ## Déployer sur Vercel
 
 1. Pousser ce dépôt sur GitHub.
-2. Sur vercel.com : **Add New → Project**, importer le dépôt. Vercel détecte Next.js, aucune variable d'environnement n'est nécessaire.
-3. Chaque push sur `main` déclenche un déploiement de production, chaque pull request une preview.
+2. Sur vercel.com : **Add New → Project**, importer le dépôt. Vercel détecte Next.js.
+3. Créer la base (Storage → Neon), appliquer `npm run db:migrate` et renseigner les variables d'environnement listées dans [docs/authentification.md](docs/authentification.md#configuration). Sans elles, la connexion est indisponible et les espaces restent fermés.
+4. Chaque push sur `main` déclenche un déploiement de production, chaque pull request une preview.
 
 ## Écrans
 
 | Espace | Route | User story / écran Figma |
 |---|---|---|
-| Accueil | `/` | choix de l'espace |
+| Authentification | `/connexion`, `/inscription`, `/mot-de-passe-oublie`, `/reinitialiser`, `/verification-email`, `/deconnexion`, `/acces-refuse` | voir [docs/authentification.md](docs/authentification.md) |
+| Compte | `/compte`, `/compte/securite` | profil, mot de passe, Google, sessions actives |
+| Accueil | `/` | choix de l'espace selon les rôles du compte |
 | Vendeur | `/vendeur` | US-11 · V4 Tableau de bord |
 | | `/vendeur/notifications` | US-11 · V13 Notifications |
 | | `/vendeur/commandes` | US-13 · V5 Commandes (Nouvelles / À préparer / Prêtes / Livrées) |
