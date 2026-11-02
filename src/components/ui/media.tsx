@@ -1,4 +1,4 @@
-import { Eye, Headphones, Play, Speaker } from "lucide-react";
+import { Eye, Headphones, Play, Shirt, Sparkles, Speaker } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { formatCompact } from "@/lib/format";
 
@@ -10,13 +10,22 @@ const swatches: Record<string, string> = {
   sun: "from-[#f2e7a1] to-[#d9c95b]",
   orange: "from-[#ffb36b] to-[#fb7800]",
   red: "from-[#f28c87] to-[#c42a23]",
+  denim: "from-[#4b6a9b] to-[#1c2c48]",
+  cream: "from-[#f6e7d0] to-[#d9b98c]",
 };
 
+function ThumbIcon({ name }: { name: string }) {
+  const props = { className: "size-1/2 drop-shadow", strokeWidth: 1.5 };
+  if (/casque|tune|earbuds/i.test(name)) return <Headphones {...props} />;
+  if (/veste|robe|chemise|wax|pagne|mode/i.test(name)) return <Shirt {...props} />;
+  if (/sérum|beauté|karité|crème/i.test(name)) return <Sparkles {...props} />;
+  return <Speaker {...props} />;
+}
+
 export function ProductThumb({ swatch, name, className }: { swatch: string; name: string; className?: string }) {
-  const Icon = /casque|tune|earbuds/i.test(name) ? Headphones : Speaker;
   return (
     <span role="img" aria-label={name} className={cn("flex shrink-0 items-center justify-center overflow-hidden rounded-md bg-gradient-to-br text-white/90", swatches[swatch] ?? swatches.slate, className)}>
-      <Icon className="size-1/2 drop-shadow" strokeWidth={1.5} />
+      <ThumbIcon name={name} />
     </span>
   );
 }

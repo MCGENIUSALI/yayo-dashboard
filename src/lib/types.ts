@@ -164,3 +164,126 @@ export interface Notification {
   unread: boolean;
   href?: string;
 }
+
+/* ---------- Buyer app (US-01 à US-09, US-20 à US-23) ---------- */
+
+export interface Shop {
+  id: string;
+  name: string;
+  category: string;
+  area: string;
+  rating: number;
+  reviews: number;
+  followers: number;
+  verified: boolean;
+  delivery: string;
+}
+
+export interface CatalogProduct {
+  id: string;
+  name: string;
+  /** Short name used in lists and order summaries. */
+  short: string;
+  shopId: string;
+  category: CategoryId;
+  tags: string[];
+  price: number;
+  compareAt?: number;
+  stock: number;
+  rating: number;
+  reviews: number;
+  colors: { name: string; hex: string }[];
+  swatch: string;
+  description: string;
+  fast?: boolean;
+  cod?: boolean;
+}
+
+export type CategoryId = "electronique" | "mode" | "beaute" | "maison" | "audio" | "promos";
+
+export interface Category {
+  id: CategoryId;
+  label: string;
+  count: string;
+}
+
+export interface CartLine {
+  productId: string;
+  color: string;
+  qty: number;
+  /** Price when the item was added: compared with the catalogue at checkout (E7). */
+  unitPrice: number;
+}
+
+export interface Address {
+  id: string;
+  label: string;
+  line: string;
+  phone: string;
+  kind: "home" | "work";
+}
+
+export type BuyerOrderTab = "ongoing" | "delivered" | "dispute";
+
+export interface BuyerOrder {
+  id: string;
+  placedAt: string;
+  shopId: string;
+  lines: CartLine[];
+  deliveryFee: number;
+  payment: PaymentStatus;
+  delivery?: DeliveryStatus;
+  method: PaymentMethod;
+  tab: BuyerOrderTab;
+  courier?: { name: string; vehicle: string; rating: number };
+  receptionCode?: string;
+  eta?: string;
+  deliveredAt?: string;
+  rated?: boolean;
+  disputeId?: string;
+  steps: { title: string; detail: string; state: "done" | "current" | "upcoming" }[];
+}
+
+export interface BuyerDispute {
+  id: string;
+  orderId: string;
+  amount: number;
+  reason: string;
+  openedAt: string;
+  attachments: number;
+}
+
+export interface FeedPost {
+  id: string;
+  shopId: string;
+  kind: PostKind;
+  caption: string;
+  swatch: string;
+  productId: string;
+  likes: number;
+  comments: number;
+  saves: number;
+  shares: number;
+  media: number;
+  sound?: string;
+}
+
+export interface FeedComment {
+  id: string;
+  author: string;
+  seller?: boolean;
+  ago: string;
+  body: string;
+  likes: number;
+  masked?: boolean;
+}
+
+export interface BuyerNotification {
+  id: string;
+  kind: "delivery" | "escrow" | "delivered" | "refund" | "promo";
+  title: string;
+  body: string;
+  ago: string;
+  unread: boolean;
+  href?: string;
+}
