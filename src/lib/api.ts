@@ -3,6 +3,7 @@
  * swapping the mock data for the real YA YO API only touches this file.
  */
 import * as admin from "@/lib/data/admin";
+import * as shopper from "@/lib/data/buyer";
 import * as seller from "@/lib/data/seller";
 
 export async function getSeller() {
@@ -80,4 +81,54 @@ export async function getReports() {
 }
 export async function getCommissionSettings() {
   return admin.commissionSettings;
+}
+
+/* ---------- Buyer app ---------- */
+
+export async function getCatalog() {
+  return shopper.catalog;
+}
+export async function getCatalogProduct(id: string) {
+  return shopper.catalog.find((p) => p.id === id) ?? null;
+}
+export async function getShop(id: string) {
+  return shopper.shops.find((s) => s.id === id) ?? null;
+}
+export async function getShops() {
+  return shopper.shops;
+}
+export async function getCategories() {
+  return shopper.categories;
+}
+export async function getBuyer() {
+  return shopper.buyer;
+}
+export async function getBuyerOrders() {
+  return shopper.buyerOrders;
+}
+export async function getBuyerOrder(id: string) {
+  return shopper.buyerOrders.find((o) => o.id === id) ?? null;
+}
+export async function getBuyerDispute(id: string) {
+  return shopper.buyerDisputes.find((d) => d.id === id) ?? null;
+}
+export async function getBuyerNotifications() {
+  return shopper.buyerNotifications;
+}
+export async function getFeed() {
+  return shopper.feedPosts;
+}
+export async function getFeedComments() {
+  return shopper.feedComments;
+}
+
+/** Search on name, category and tags (accent-insensitive). */
+export async function searchCatalog(q?: string) {
+  const norm = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+  const words = q ? norm(q).split(/\s+/).filter(Boolean) : [];
+  return shopper.catalog.filter((p) => {
+    if (!words.length) return true;
+    const hay = norm([p.name, p.category, ...p.tags].join(" "));
+    return words.every((w) => hay.includes(w) || hay.includes(w.replace(/s$/, "")));
+  });
 }

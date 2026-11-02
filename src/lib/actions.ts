@@ -49,3 +49,28 @@ export const remindCourier = (id: string) => request({ id }, "La relance n’a p
 export const resolveReport = (id: string, action: "restore" | "delete" | "suspend") => request({ id, action }, "Le signalement n’a pas été traité.");
 export const setUserStatus = (id: string, status: User["status"]) => request({ id, status }, "Le statut du compte n’a pas changé.");
 export const saveCommissionSettings = <T>(settings: T) => request(settings, "Les paramètres n’ont pas été enregistrés.");
+
+/* ---------- Buyer app ---------- */
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+export const sendOtp = (phone: string) => request({ phone }, "Le code n’a pas pu être envoyé.");
+/** Demo: "000000" simulates a wrong or expired code (E8). */
+export const verifyOtp = async (code: string) => {
+  const r = await request({ code }, "Le code n’a pas pu être vérifié.");
+  if (code === "000000") throw new Error("Code incorrect. Il te reste 2 essais.");
+  return r;
+};
+export const saveProfile = () => request(true, "Ton profil n’a pas été enregistré.");
+export const placeOrder = (method: string) => request({ id: "YY-24880", method }, "La commande n’a pas pu être créée.");
+/** Mobile Money: the buyer validates on their phone, the operator answers after a few seconds. */
+export const awaitMobileMoney = async () => {
+  await wait(3200);
+  return request(true, "Solde Mobile Money insuffisant.");
+};
+export const submitReview = () => request(true, "Ton avis n’a pas été publié.");
+export const openDispute = (orderId: string) => request({ id: "LT-0318", orderId }, "Le signalement n’a pas été envoyé.");
+export const addDisputeInfo = (id: string) => request({ id }, "L’information n’a pas été ajoutée.");
+export const toggleFollow = (shopId: string, follow: boolean) => request({ shopId, follow }, "L’abonnement n’a pas été mis à jour.");
+export const subscribeRestock = (productId: string) => request({ productId }, "L’alerte n’a pas été activée.");
+export const postComment = (postId: string, body: string) => request({ postId, body }, "Ton commentaire n’a pas été publié.");
+export const repost = (postId: string) => request({ postId }, "La publication n’a pas été republiée.");
