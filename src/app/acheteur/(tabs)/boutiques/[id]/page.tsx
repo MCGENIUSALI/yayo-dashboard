@@ -1,13 +1,13 @@
 import { Truck } from "lucide-react";
 import { notFound } from "next/navigation";
-import { ShopTabs } from "@/components/buyer/shop-tabs";
+import { ShopProducts } from "@/components/buyer/shop-products";
 import { FollowButton } from "@/components/buyer/social";
 import { TopBar } from "@/components/buyer/top-bar";
 import { Stars } from "@/components/buyer/ui";
 import { ShareButton } from "@/components/buyer/share-button";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { getCatalog, getFeed, getShop, getShopLives } from "@/lib/api";
+import { getCatalog, getShop } from "@/lib/api";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   return { title: (await getShop((await params).id))?.name ?? "Boutique" };
@@ -17,9 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function ShopPage({ params }: { params: Promise<{ id: string }> }) {
   const shop = await getShop((await params).id);
   if (!shop) notFound();
-  const [catalog, feed, lives] = await Promise.all([getCatalog(), getFeed(), getShopLives(shop.id)]);
-  const products = catalog.filter((p) => p.shopId === shop.id);
-  const posts = feed.filter((p) => p.shopId === shop.id);
+  const products = (await getCatalog()).filter((p) => p.shopId === shop.id);
   return (
     <>
       <TopBar title={shop.name} fallback="/acheteur/explorer" trailing={<ShareButton title={shop.name} />} />
@@ -42,7 +40,7 @@ export default async function ShopPage({ params }: { params: Promise<{ id: strin
           <FollowButton shop={shop} size="lg" />
         </section>
         <p className="type-body-s text-fg-tertiary">Une question ? Passe par le support YA YO : pas d’échange direct avec le vendeur.</p>
-        <ShopTabs products={products} shopName={shop.name} posts={posts} lives={lives} />
+        <ShopProducts products={products} shopName={shop.name} />
       </div>
     </>
   );

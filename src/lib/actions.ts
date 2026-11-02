@@ -90,9 +90,3 @@ export const confirmDelivery = async (id: string, code: string, expected: string
 };
 export const reportIncident = (id: string, reason: string) => request({ id, reason }, "L’incident n’a pas été déclaré.");
 export const returnCash = (amount: number, channel: string) => request({ amount, channel }, "Le reversement n’a pas abouti.");
-
-/* ---------- Seller content studio ---------- */
-export const scheduleLive = () => request(true, "Le live n’a pas été programmé.");
-export const publishStory = () => request(true, "La story n’a pas été publiée.");
-export const saveCollection = (name: string) => request({ name }, "La collection n’a pas été enregistrée.");
-export const startLive = (id: string) => request({ id }, "Le live n’a pas pu démarrer.");

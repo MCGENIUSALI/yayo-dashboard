@@ -88,35 +88,3 @@ export const sellerNotifications: Notification[] = [
   { id: "n5", kind: "dispute", title: "Litige ouvert", body: "#LT-0318 : réponds avant le 21 oct. 15:10.", ago: "Hier", unread: false },
   { id: "n6", kind: "comment", title: "2 commentaires à modérer", body: "Sur « Le son 360° de la JBL Pulse… »", ago: "Hier", unread: false, href: "/vendeur/contenus/c1" },
 ];
-
-/* ---------- Gestion de contenu (Figma 02_Seller · profil créateur) ---------- */
-
-export interface Story { id: string; caption: string; cover: string; postedAgo: string; expiresIn: string; views: number; replies: number; productIds: string[] }
-export type LiveState = "live" | "scheduled" | "replay";
-export interface Live { id: string; title: string; state: LiveState; when: string; cover: string; productIds: string[]; viewers?: number; reminders?: number; views?: number; duration?: string; sales?: number }
-export interface ProductCollection { id: string; name: string; cover: string; productIds: string[]; published: boolean }
-
-export const stories: Story[] = [
-  { id: "s1", caption: "Arrivage Pulse 5 ce matin", cover: "sun", postedAgo: "il y a 2 h", expiresIn: "22 h", views: 1_840, replies: 12, productIds: ["p4"] },
-  { id: "s2", caption: "Coulisses : on emballe vos commandes", cover: "teal", postedAgo: "il y a 9 h", expiresIn: "15 h", views: 2_310, replies: 4, productIds: [] },
-];
-
-export const lives: Live[] = [
-  { id: "l1", title: "Super promo JBL : −30 % en direct", state: "live", when: "En direct depuis 12 min", viewers: 842, cover: "orange", productIds: ["p1", "p5"], sales: 14 },
-  { id: "l2", title: "Nouveautés de la semaine", state: "scheduled", when: "Vendredi à 18h", reminders: 312, cover: "teal", productIds: ["p4"] },
-  { id: "l3", title: "Tuto : bien choisir son enceinte", state: "scheduled", when: "Dimanche à 15h", reminders: 128, cover: "slate", productIds: ["p1", "p2"] },
-  { id: "l4", title: "Arrivage Gombe : spécial casques", state: "replay", when: "18 oct.", duration: "45 min", views: 6_200, cover: "dark", productIds: ["p3"], sales: 22 },
-];
-
-export const collections: ProductCollection[] = [
-  { id: "k1", name: "Enceintes portables", cover: "teal", productIds: ["p1", "p2", "p4", "p6"], published: true },
-  { id: "k2", name: "Casques et écouteurs", cover: "dark", productIds: ["p3", "p5"], published: true },
-  { id: "k3", name: "Idées cadeaux", cover: "orange", productIds: ["p1", "p5"], published: false },
-];
-
-export const contentAnalytics = {
-  jour: { profileViews: 1_840, contentViews: 6_900, clicks: 410, conversion: 3.9, deltas: [5, 9, 4, 0.3], followers: [12_740, 12_750, 12_765, 12_770, 12_779, 12_790, 12_800], revenue: { total: 95_000, lives: 0, videos: 95_000 } },
-  semaine: { profileViews: 12_450, contentViews: 45_200, clicks: 3_240, conversion: 4.2, deltas: [12, 24, 8, 1.1], followers: [12_420, 12_510, 12_480, 12_640, 12_610, 12_720, 12_800], revenue: { total: 450_000, lives: 280_000, videos: 170_000 } },
-  mois: { profileViews: 48_900, contentViews: 182_000, clicks: 12_800, conversion: 4.0, deltas: [18, 31, 14, 0.6], followers: [11_200, 11_600, 11_900, 12_100, 12_350, 12_600, 12_800], revenue: { total: 1_820_000, lives: 960_000, videos: 860_000 } },
-  total: { profileViews: 312_000, contentViews: 1_240_000, clicks: 81_000, conversion: 3.7, deltas: [0, 0, 0, 0], followers: [2_000, 4_500, 6_800, 8_900, 10_400, 11_900, 12_800], revenue: { total: 9_600_000, lives: 4_100_000, videos: 5_500_000 } },
-};

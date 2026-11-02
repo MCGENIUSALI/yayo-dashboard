@@ -202,14 +202,3 @@ export const savedPosts = {
 };
 
 export const savedCollections = ["Tout", "Cadeaux", "Audio", "À acheter en fin de mois"];
-
-/** Lives shown on a shop's public profile (B5 · onglet Lives). */
-export const shopLives: Record<string, { id: string; title: string; state: "live" | "scheduled" | "replay"; when: string; viewers?: number; swatch: string }[]> = {
-  "jbl-store-kin": [
-    { id: "sl1", title: "Super promo JBL : −30 % en direct", state: "live", when: "En direct depuis 12 min", viewers: 842, swatch: "orange" },
-    { id: "sl2", title: "Nouveautés de la semaine", state: "scheduled", when: "Vendredi à 18h", swatch: "teal" },
-    { id: "sl3", title: "Arrivage spécial casques", state: "replay", when: "18 oct. · 45 min", viewers: 6_200, swatch: "dark" },
-  ],
-  bilokos2kin: [{ id: "sl4", title: "Unboxing JBL Pulse 5", state: "scheduled", when: "Samedi à 16h", swatch: "sun" }],
-  "mama-luka": [{ id: "sl5", title: "Défilé wax : la collection d’octobre", state: "replay", when: "12 oct. · 30 min", viewers: 3_100, swatch: "denim" }],
-};

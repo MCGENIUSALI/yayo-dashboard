@@ -1,7 +1,6 @@
 import { Eye, ShoppingBag } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { CatalogTabs } from "@/components/seller/catalog-tabs";
-import { ContentTabs } from "@/components/seller/content-studio";
 import { PostsGrid } from "@/components/seller/posts-grid";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { getPosts, getSeller } from "@/lib/api";
@@ -15,11 +14,8 @@ export default async function PostsPage() {
   const revenue = posts.reduce((s, p) => s + p.stats.revenue, 0);
   return (
     <div className="flex flex-col gap-5">
-      <PageHeader eyebrow={`${seller.name} · ${formatCompact(seller.followers)} abonnés`} title="Gestion de contenu" />
-      <div className="md:hidden">
-        <CatalogTabs />
-      </div>
-      <ContentTabs />
+      <PageHeader eyebrow={`${seller.name} · ${formatCompact(seller.followers)} abonnés`} title="Contenus" />
+      <CatalogTabs />
       <div className="grid grid-cols-2 gap-3 lg:max-w-2xl">
         <KpiCard icon={<Eye />} label="Vues (7 j)" value={formatCompact(views)} trend="up" trendLabel="+12 % vs sem. dernière" />
         <KpiCard icon={<ShoppingBag />} label="Ventes via contenus" value={formatFC(revenue)} trend="up" trendLabel="+12 % vs sem. dernière" />
