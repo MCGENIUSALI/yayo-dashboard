@@ -1,8 +1,9 @@
 "use client";
 
-import { Clapperboard, Plus } from "lucide-react";
+import { Clapperboard } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { AddContentButton } from "@/components/seller/content-studio";
 import { ButtonLink } from "@/components/ui/button";
 import { PostTile } from "@/components/ui/media";
 import { EmptyState } from "@/components/ui/misc";
@@ -25,9 +26,7 @@ export function PostsGrid({ posts }: { posts: Post[] }) {
             { value: "scheduled", label: "Programmées" },
           ]}
         />
-        <ButtonLink href="/vendeur/contenus/nouveau" icon={<Plus className="size-4" />} className="hidden md:inline-flex">
-          Publier
-        </ButtonLink>
+        <AddContentButton className="hidden md:inline-flex" />
       </div>
       {list.length === 0 ? (
         <EmptyState icon={<Clapperboard />} title="Rien de programmé" action={<ButtonLink href="/vendeur/contenus/nouveau">Créer une publication</ButtonLink>}>
@@ -44,9 +43,7 @@ export function PostsGrid({ posts }: { posts: Post[] }) {
           ))}
         </ul>
       )}
-      <ButtonLink href="/vendeur/contenus/nouveau" icon={<Plus className="size-4" />} size="lg" className="fixed right-4 bottom-[calc(80px+env(safe-area-inset-bottom))] z-30 shadow-e3 md:hidden">
-        Publier
-      </ButtonLink>
+      <AddContentButton fab />
     </div>
   );
 }

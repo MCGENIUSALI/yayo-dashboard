@@ -39,6 +39,18 @@ export async function getComments(postId: string) {
 export async function getSellerNotifications() {
   return seller.sellerNotifications;
 }
+export async function getStories() {
+  return seller.stories;
+}
+export async function getLives() {
+  return seller.lives;
+}
+export async function getCollections() {
+  return seller.collections;
+}
+export async function getContentAnalytics() {
+  return seller.contentAnalytics;
+}
 export async function getPayouts() {
   return seller.payouts;
 }
@@ -114,6 +126,9 @@ export async function getBuyerDispute(id: string) {
 }
 export async function getBuyerNotifications() {
   return shopper.buyerNotifications;
+}
+export async function getShopLives(shopId: string) {
+  return shopper.shopLives[shopId] ?? [];
 }
 export async function getFeed() {
   return shopper.feedPosts;

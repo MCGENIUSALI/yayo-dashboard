@@ -42,8 +42,12 @@ Node 20.9+ requis (voir `.nvmrc`).
 | | `/vendeur/contenus` | US-24 · SV1 Mes publications |
 | | `/vendeur/contenus/nouveau` | US-24 · SV2-SV3 Nouvelle publication, lier jusqu'à 5 produits |
 | | `/vendeur/contenus/[id]` | US-25 · SV4 Statistiques et modération des commentaires |
+| | `/vendeur/contenus/stories`, `/stories/nouvelle` | Stories 24 h avec produit lié |
+| | `/vendeur/contenus/lives`, `/lives/nouveau` | Live en cours, lives programmés (démarrer), replays, formulaire « Programmer un live » |
+| | `/vendeur/contenus/collections` | Collections de produits (créer, modifier, masquer) |
+| | `/vendeur/contenus/performances` | Mes performances : vues, clics, conversion, abonnés, revenus du contenu, top contenus |
 | | `/vendeur/revenus` | US-14 · V11 Revenus, retrait Mobile Money |
-| | `/vendeur/boutique` | US-14 · V12 Ma boutique |
+| | `/vendeur/boutique` | Profil créateur (stats, « + Contenu », actions rapides, aperçu 7 j) ·  US-14 · V12 Ma boutique |
 | | `/vendeur/ouverture` | US-10 · V1-V3 Ouverture de boutique et KYC |
 | Admin | `/admin` | AD1 Tableau de bord |
 | | `/admin/commandes` | Commandes, statuts paiement + livraison synchronisés |

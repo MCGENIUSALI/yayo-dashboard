@@ -22,9 +22,9 @@ const MAX_LINKED = 5;
 const CONTACT_RE = /(\+?243[\s.-]?\d[\d\s.-]{6,}|\b0\d{9}\b|https?:\/\/\S+|wa\.me\/\S+)/i;
 
 /** SV2 · Nouvelle publication + SV3 · Lier des produits. */
-export function PostComposer({ products }: { products: Product[] }) {
+export function PostComposer({ products, initialKind = "video" }: { products: Product[]; initialKind?: "video" | "photo" }) {
   const router = useRouter();
-  const [kind, setKind] = useState<"video" | "photo">("video");
+  const [kind, setKind] = useState<"video" | "photo">(initialKind);
   const [caption, setCaption] = useState("Le son 360° de la JBL Pulse en vrai 🔊 #kinshasa");
   const [linked, setLinked] = useState<string[]>(["p4", "p1"]);
   const [picker, setPicker] = useState(false);
