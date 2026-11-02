@@ -401,7 +401,7 @@ export function VideoSlide({ post, shop, product, comments }: { post: FeedPost; 
       <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
       <div className="absolute right-3 bottom-40 flex flex-col items-center gap-4">
         <Link href={`/acheteur/boutiques/${shop.id}`} aria-label={`Boutique ${shop.name}`}>
-          <Avatar name={shop.name} verified size="md" className="size-12" />
+          <Avatar name={shop.name} verified size="md" className="size-12 bg-orange-50 text-orange-600" />
         </Link>
         <span className={rail}>
           <button type="button" aria-pressed={liked} aria-label="J’aime" onClick={() => setLiked(!liked)} className={disc}>
@@ -482,7 +482,7 @@ function FollowPill({ shop }: { shop: Shop }) {
   const { following, setFollowing } = useBuyer();
   const on = following.has(shop.id);
   return (
-    <button type="button" aria-pressed={on} onClick={() => setFollowing(shop.id, !on)} className="pressable rounded-md border border-accent bg-accent-subtle/90 px-2 py-0.5 type-label-s text-fg-accent">
+    <button type="button" aria-pressed={on} onClick={() => setFollowing(shop.id, !on)} className="pressable rounded-md border border-orange-500 bg-orange-50 px-2 py-0.5 type-label-s text-orange-600">
       {on ? "Abonné" : "Suivre"}
     </button>
   );

@@ -1,8 +1,10 @@
-import { ArrowRight, ShieldCheck, Store } from "lucide-react";
+import { ArrowRight, Bike, ShieldCheck, ShoppingBag, Store } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 
 const spaces = [
+  { href: "/acheteur/bienvenue", icon: ShoppingBag, title: "App acheteur", body: "Découverte, fil vidéo, panier multi-vendeur, paiement sous séquestre, suivi, avis et litiges." },
+  { href: "/livreur", icon: Bike, title: "App livreur", body: "Disponibilité, missions, collecte et livraison par code, cash à reverser et revenus." },
   { href: "/vendeur", icon: Store, title: "Espace vendeur", body: "Ventes, commandes à préparer, catalogue, publications sociales, revenus et boutique." },
   { href: "/admin", icon: ShieldCheck, title: "Administration", body: "Séquestre, litiges, validations KYC, utilisateurs, livreurs, modération et rapports." },
 ];

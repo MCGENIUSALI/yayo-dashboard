@@ -4,12 +4,12 @@ import { useRef } from "react";
 import { cn } from "@/lib/cn";
 
 /** One box per digit; typing moves forward, Backspace moves back, pasting fills every box. */
-export function OtpInput({ value, onChange, length = 6, invalid, label = "Code reçu par SMS" }: { value: string; onChange: (v: string) => void; length?: number; invalid?: boolean; label?: string }) {
+export function OtpInput({ value, onChange, length = 6, invalid, label = "Code reçu par SMS", alphanumeric }: { value: string; onChange: (v: string) => void; length?: number; invalid?: boolean; label?: string; alphanumeric?: boolean }) {
   const refs = useRef<(HTMLInputElement | null)[]>([]);
   const digits = Array.from({ length }, (_, i) => value[i] ?? "");
 
   function set(i: number, d: string) {
-    const clean = d.replace(/\D/g, "");
+    const clean = (alphanumeric ? d.toUpperCase().replace(/[^A-Z0-9]/g, "") : d.replace(/\D/g, ""));
     if (clean.length > 1) {
       const next = (value.slice(0, i) + clean).slice(0, length);
       onChange(next);
@@ -31,7 +31,8 @@ export function OtpInput({ value, onChange, length = 6, invalid, label = "Code r
             refs.current[i] = el;
           }}
           value={d}
-          inputMode="numeric"
+          inputMode={alphanumeric ? "text" : "numeric"}
+          autoCapitalize="characters"
           autoComplete={i === 0 ? "one-time-code" : "off"}
           aria-label={`Chiffre ${i + 1}`}
           aria-invalid={invalid || undefined}

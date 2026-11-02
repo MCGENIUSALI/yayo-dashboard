@@ -56,6 +56,39 @@ Node 20.9+ requis (voir `.nvmrc`).
 | | `/admin/commissions` | AD5 Commissions et frais |
 | | `/admin/rapports` | Rapports |
 
+### App acheteur (`/acheteur`, mobile)
+
+| Route | User story / écran Figma |
+|---|---|
+| `/acheteur/bienvenue` | US-01 · A1 Splash, A2–A4 Onboarding |
+| `/acheteur/connexion`, `/acheteur/connexion/code` | US-01 · A5 Connexion, A6 Code OTP, E8 Code incorrect (démo : `000000` simule l’erreur) |
+| `/acheteur/inscription`, `/acheteur/inscription/profil` | US-01 · A7 Créer mon profil, A8 Choix du profil (→ V1 vendeur ou L1 livreur) |
+| `/acheteur/compte-suspendu` | US-01 · E9 |
+| `/acheteur` | US-02 · B1 Accueil, E1 hors ligne (`?hors-ligne`), E2 chargement |
+| `/acheteur/explorer`, `/acheteur/recherche` | US-02 · E3 Catégories, E4 Recherche, B2 Résultats, B3 Filtres, E5 Aucun résultat |
+| `/acheteur/produits/[id]`, `/acheteur/boutiques/[id]` | US-03 · B4 Fiche produit, E6 Rupture (`jbl-charge-5`), B5 Boutique |
+| `/acheteur/panier` | US-04 · C1 Panier multi-vendeur, E7 Panier ajusté, D8 Panier vide |
+| `/acheteur/commander/*` | US-05 · C2 Livraison, C3 Paiement, C4 Validation Mobile Money, C5 Confirmée, C6 Échec (`?simuler=echec`) |
+| `/acheteur/commandes`, `/acheteur/commandes/[id]` | US-06 · D1 Mes commandes, D2 Suivi et code de réception |
+| `/acheteur/notifications` | US-06 · D6 |
+| `/acheteur/commandes/[id]/avis` | US-07 · D3 Livrée · Noter |
+| `/acheteur/commandes/[id]/probleme`, `/acheteur/litiges/[id]` | US-08 · D4 Signaler, D5 Litige en cours |
+| `/acheteur/compte`, `/acheteur/compte/enregistrements` | US-09 · D7 Profil, US-23 · SC6 Enregistrements |
+| `/acheteur/fil`, `/acheteur/fil/abonnements` | US-20 à US-22 · SC1 Fil vidéo, SC2 Achat rapide, SC3 Fil photos, SC4 Commentaires, SC5 Partager |
+
+### App livreur (`/livreur`, mobile)
+
+| Route | User story / écran Figma |
+|---|---|
+| `/livreur/inscription`, `/livreur/inscription/validation` | US-15 · L1 Devenir livreur, L2 Documents KYC, L3 Validation en attente |
+| `/livreur` | US-16 · L4 Disponible, L12 Indisponible, mission proposée |
+| `/livreur/missions` | US-16 · L13 Mes missions |
+| `/livreur/missions/[id]` | US-17 · L5 Collecte (code vendeur), L6 En livraison, L7 Code client + cash, L8 Livrée |
+| `/livreur/missions/[id]/incident` | US-18 · L9 Incident |
+| `/livreur/cash`, `/livreur/revenus`, `/livreur/historique`, `/livreur/profil` | US-19 · L10 Cash à reverser, L11 Revenus, historique, L14 Profil |
+
+Le panier, le checkout et la progression des missions sont gardés côté client (contextes `components/buyer/store.tsx` et `components/courier/store.tsx`) le temps de la session : un rechargement repart des données de démo.
+
 ## Architecture
 
 ```

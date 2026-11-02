@@ -82,6 +82,7 @@ export function BuyerStoreProvider({ children }: { children: ReactNode }) {
       ),
     [],
   );
+  const clearCart = useCallback(() => setLines((ls) => (ls.length ? [] : ls)), []);
   const setCheckout = useCallback((patch: Partial<Checkout>) => setCheckoutState((c) => ({ ...c, ...patch })), []);
   const toggleFavorite = useCallback(
     (id: string) =>
@@ -121,13 +122,13 @@ export function BuyerStoreProvider({ children }: { children: ReactNode }) {
       confirmOrder: (id: string) => {
         setPlaced({ id, items: totals.items, shops: totals.shops, total: totals.total, method: checkout.method, slot: checkout.slot });
       },
-      clearCart: () => setLines([]),
+      clearCart,
       favorites,
       toggleFavorite,
       following,
       setFollowing,
     };
-  }, [lines, add, setQty, remove, acceptAdjustments, checkout, setCheckout, placed, favorites, toggleFavorite, following, setFollowing]);
+  }, [lines, add, setQty, remove, acceptAdjustments, clearCart, checkout, setCheckout, placed, favorites, toggleFavorite, following, setFollowing]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

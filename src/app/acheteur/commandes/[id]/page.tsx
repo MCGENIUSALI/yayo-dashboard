@@ -63,7 +63,7 @@ export default async function TrackingPage({ params }: { params: Promise<{ id: s
           </div>
           <div className="flex flex-col items-end gap-1.5">
             {order.delivery && <DeliveryBadge status={order.delivery} />}
-            <PaymentBadge status={order.payment} />
+            {order.payment !== "in_delivery" && <PaymentBadge status={order.payment} />}
           </div>
         </div>
         {order.courier && live && (

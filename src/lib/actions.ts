@@ -74,3 +74,19 @@ export const toggleFollow = (shopId: string, follow: boolean) => request({ shopI
 export const subscribeRestock = (productId: string) => request({ productId }, "L’alerte n’a pas été activée.");
 export const postComment = (postId: string, body: string) => request({ postId, body }, "Ton commentaire n’a pas été publié.");
 export const repost = (postId: string) => request({ postId }, "La publication n’a pas été republiée.");
+
+/* ---------- Courier app ---------- */
+export const submitCourierKyc = () => request(true, "Le dossier n’a pas été envoyé.");
+export const setAvailability = (on: boolean) => request({ on }, "Ta disponibilité n’a pas changé.");
+export const acceptMission = (id: string) => request({ id }, "La mission n’a pas pu être acceptée.");
+/** Demo: handover code must match the seller's code. */
+export const confirmPickup = async (id: string, code: string, expected: string) => {
+  await request({ id }, "La collecte n’a pas été confirmée.");
+  if (code.toUpperCase() !== expected) throw new Error("Code de remise incorrect. Demande-le à nouveau au vendeur.");
+};
+export const confirmDelivery = async (id: string, code: string, expected: string) => {
+  await request({ id }, "La livraison n’a pas été confirmée.");
+  if (code !== expected) throw new Error("Code de réception incorrect. Le client le trouve dans le suivi de sa commande.");
+};
+export const reportIncident = (id: string, reason: string) => request({ id, reason }, "L’incident n’a pas été déclaré.");
+export const returnCash = (amount: number, channel: string) => request({ amount, channel }, "Le reversement n’a pas abouti.");
